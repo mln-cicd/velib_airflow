@@ -2,11 +2,11 @@
 from sqlalchemy import text
 from prefect import task, Flow, flow
 from app import DL_FILE
-from app.db.database import create_tables, get_db_session
-from app.fetch.requests import fetch_data_from_api, process_data
+from plugins.db.database import create_tables, get_db_session
+from plugins.fetch.requests import fetch_data_from_api, process_data
 
-from app.db.models import Location
-from app.fetch.populate_databases import populate_locations
+from plugins.db.models import Location
+from plugins.fetch.populate_databases import populate_locations
 
 @task
 def start_prefect():

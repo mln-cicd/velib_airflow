@@ -1,9 +1,9 @@
 # fetch_api2sql.py
 
 from prefect import flow, task
-from app.fetch.requests import fetch_data_from_api, check_same_md5_hash, process_data
-from app.fetch.populate_databases import populate_locations, populate_stations
-from app.db.models import (
+from plugins.fetch.requests import fetch_data_from_api, check_same_md5_hash, process_data
+from plugins.fetch.populate_databases import populate_locations, populate_stations
+from plugins.db.models import (
     Location, 
     Station
 )

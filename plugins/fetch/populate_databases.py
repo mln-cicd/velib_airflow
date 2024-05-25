@@ -1,9 +1,9 @@
 # populate_locations.py
 
 import logging
-from app.db.database import get_db_session
-from app.db.models import Location, Station
-from app.fetch.requests import fetch_data_from_api
+from plugins.db.database import get_db_session
+from plugins.db.models import Location, Station
+from plugins.fetch.requests import fetch_data_from_api
 
 logger = logging.getLogger(__name__)
 

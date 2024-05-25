@@ -1,6 +1,6 @@
 # models.py
 from sqlalchemy import Column, String, Float, ForeignKey, Integer
-from app.db.database import Base
+from plugins.db.database import Base
 
 
 class Location(Base):
