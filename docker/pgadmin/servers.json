@@ -1,14 +1,14 @@
 {
   "Servers": {
-      "1": {
-          "Name": "Velib",
-          "Group": "Servers",
-          "Host": "postgres",
-          "Port": 5432,
-          "MaintenanceDB": "velib",
-          "Username": "velib_user",
-          "Password": "velib_password",
-          "SSLMode": "prefer"
-      }
+    "1": {
+      "Name": "Velib",
+      "Group": "Servers",
+      "Host": "user-postgres",
+      "Port": 5432,
+      "MaintenanceDB": "velib",
+      "Username": "velib_user",
+      "Password": "velib_password",
+      "SSLMode": "prefer"
+    }
   }
 }

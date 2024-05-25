@@ -1,7 +1,8 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, text, Column, String, Float
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import requests
 import logging
@@ -10,36 +11,24 @@ import json
 import os
 
 # Database connection details
-DATABASE_URI = 'postgresql+psycopg2://airflow:airflow@postgres/velib'
+DATABASE_URI = 'postgresql+psycopg2://velib_user:velib_password@user-postgres/velib'
+
+# Define the base class for the ORM models
+Base = declarative_base()
+
+# Define the Location ORM model
+class Location(Base):
+    __tablename__ = 'locations'
+    stationcode = Column(String, primary_key=True)
+    name = Column(String)
+    latitude = Column(Float)
+    longitude = Column(Float)
+    nom_arrondissement_communes = Column(String)
 
 # Define the database models and functions directly in the DAG file
 def create_tables():
     engine = create_engine(DATABASE_URI)
-    with engine.connect() as connection:
-        connection.execute(text("""
-        CREATE TABLE IF NOT EXISTS locations (
-            stationcode VARCHAR(255) PRIMARY KEY,
-            name VARCHAR(255),
-            latitude FLOAT,
-            longitude FLOAT,
-            nom_arrondissement_communes VARCHAR(255)
-        );
-        """))
-        connection.execute(text("""
-        CREATE TABLE IF NOT EXISTS stations (
-            record_timestamp VARCHAR(255) PRIMARY KEY,
-            stationcode VARCHAR(255) REFERENCES locations(stationcode),
-            ebike INTEGER,
-            mechanical INTEGER,
-            duedate VARCHAR(255),
-            numbikesavailable INTEGER,
-            numdocksavailable INTEGER,
-            capacity INTEGER,
-            is_renting VARCHAR(255),
-            is_installed VARCHAR(255),
-            is_returning VARCHAR(255)
-        );
-        """))
+    Base.metadata.create_all(engine)
 
 def get_db_session():
     engine = create_engine(DATABASE_URI)
@@ -99,14 +88,6 @@ def process_data(data):
         })
     logger.info("Data processing completed. Processed %d records.", len(processed_data))
     return processed_data
-
-class Location:
-    def __init__(self, stationcode, name, latitude, longitude, nom_arrondissement_communes):
-        self.stationcode = stationcode
-        self.name = name
-        self.latitude = latitude
-        self.longitude = longitude
-        self.nom_arrondissement_communes = nom_arrondissement_communes
 
 def populate_locations(data):
     logger.info("Populating locations...")

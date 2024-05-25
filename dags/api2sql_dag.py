@@ -1,7 +1,8 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine, Column, String, Integer, Float
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import requests
 import logging
@@ -10,11 +11,39 @@ import json
 import os
 
 # Database connection details
-DATABASE_URI = 'postgresql+psycopg2://airflow:airflow@postgres/velib'
+DATABASE_URI = 'postgresql+psycopg2://velib_user:velib_password@user-postgres/velib'
+
+# Define the base class for the ORM models
+Base = declarative_base()
+
+# Define the Location ORM model
+class Location(Base):
+    __tablename__ = 'locations'
+    stationcode = Column(String, primary_key=True)
+    name = Column(String)
+    latitude = Column(Float)
+    longitude = Column(Float)
+    nom_arrondissement_communes = Column(String)
+
+# Define the Station ORM model
+class Station(Base):
+    __tablename__ = 'stations'
+    record_timestamp = Column(String, primary_key=True)
+    stationcode = Column(String)
+    ebike = Column(Integer)
+    mechanical = Column(Integer)
+    duedate = Column(String)
+    numbikesavailable = Column(Integer)
+    numdocksavailable = Column(Integer)
+    capacity = Column(Integer)
+    is_renting = Column(String)
+    is_installed = Column(String)
+    is_returning = Column(String)
 
 # Define the database models and functions directly in the DAG file
 def get_db_session():
     engine = create_engine(DATABASE_URI)
+    Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     return Session()
 
@@ -86,40 +115,27 @@ def process_data(data):
     logger.info("Data processing completed. Processed %d records.", len(processed_data))
     return processed_data
 
-class Station:
-    def __init__(self, record_timestamp, stationcode, ebike, mechanical, duedate, numbikesavailable, numdocksavailable, capacity, is_renting, is_installed, is_returning):
-        self.record_timestamp = record_timestamp
-        self.stationcode = stationcode
-        self.ebike = ebike
-        self.mechanical = mechanical
-        self.duedate = duedate
-        self.numbikesavailable = numbikesavailable
-        self.numdocksavailable = numdocksavailable
-        self.capacity = capacity
-        self.is_renting = is_renting
-        self.is_installed = is_installed
-        self.is_returning = is_returning
-
 def populate_stations(data):
     logger.info("Populating stations...")
-    with get_db_session() as session:
-        for record in data:
-            logger.debug("Processing record: %s", record)
-            station = Station(
-                record_timestamp=record['record_timestamp'],
-                stationcode=record['stationcode'],
-                ebike=record['ebike'],
-                mechanical=record['mechanical'],
-                duedate=record['duedate'],
-                numbikesavailable=record['numbikesavailable'],
-                numdocksavailable=record['numdocksavailable'],
-                capacity=record['capacity'],
-                is_renting=record['is_renting'],
-                is_installed=record['is_installed'],
-                is_returning=record['is_returning']
-            )
-            session.merge(station)
-            logger.debug("Merged station: %s", station)
+    session = get_db_session()
+    for record in data:
+        logger.debug("Processing record: %s", record)
+        station = Station(
+            record_timestamp=record['record_timestamp'],
+            stationcode=record['stationcode'],
+            ebike=record['ebike'],
+            mechanical=record['mechanical'],
+            duedate=record['duedate'],
+            numbikesavailable=record['numbikesavailable'],
+            numdocksavailable=record['numdocksavailable'],
+            capacity=record['capacity'],
+            is_renting=record['is_renting'],
+            is_installed=record['is_installed'],
+            is_returning=record['is_returning']
+        )
+        session.merge(station)
+        logger.debug("Merged station: %s", station)
+    session.commit()
     logger.info("Stations populated successfully.")
 
 default_args = {

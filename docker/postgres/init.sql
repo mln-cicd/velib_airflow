@@ -28,5 +28,19 @@ CREATE TABLE IF NOT EXISTS stations (
     is_returning VARCHAR(255)
 );
 
--- Create the prefect database if it doesn't exist
-SELECT 'CREATE DATABASE prefect' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'prefect')\gexec
+-- Create the velib_user and grant privileges
+DO
+$$
+BEGIN
+    IF NOT EXISTS (
+        SELECT
+        FROM   pg_catalog.pg_roles
+        WHERE  rolname = 'velib_user') THEN
+
+        CREATE ROLE velib_user LOGIN PASSWORD 'velib_password';
+    END IF;
+END
+$$;
+
+GRANT ALL PRIVILEGES ON DATABASE velib TO velib_user;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO velib_user;
