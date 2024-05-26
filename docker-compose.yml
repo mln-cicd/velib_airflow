@@ -17,6 +17,11 @@ x-airflow-common: &airflow-common
     AIRFLOW__SMTP__SMTP_MAIL_FROM: "de.airflow@gmail.com"
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- pymongo minio boto3 sqlalchemy}
     PYTHONPATH: /opt/airflow/app
+    # MinIO environment variables
+    MINIO_ENDPOINT: minioserver:9000
+    MINIO_BUCKET: ${MINIO_BUCKET}
+    AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
   volumes:
     - ./dags:/opt/airflow/dags
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
@@ -53,12 +58,13 @@ services:
       - ./db:/var/lib/postgresql/data
       - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "velib_user"]
+      test: ["CMD", "pg_isready", "-U", "velib_user", "-d", "velib"]
       interval: 5s
       retries: 5
     restart: always
     networks:
       - backend
+
 
   redis:
     image: redis:latest
@@ -158,7 +164,6 @@ services:
     networks:
       - backend
 
-
   minioserver:
     # MinIO: Lightweight AWS S3 local file storage
     image: minio/minio
@@ -180,7 +185,6 @@ services:
       - MINIO_BUCKET=${MINIO_BUCKET}
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-
 
 volumes:
   airflow-postgres-db-volume:

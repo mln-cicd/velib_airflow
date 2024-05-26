@@ -15,8 +15,8 @@ CREATE TABLE IF NOT EXISTS locations (
 
 -- Create the stations table if it doesn't exist
 CREATE TABLE IF NOT EXISTS stations (
-    record_timestamp VARCHAR(255) PRIMARY KEY,
-    stationcode VARCHAR(255) REFERENCES locations(stationcode),
+    record_timestamp VARCHAR(255),
+    stationcode VARCHAR(255),
     ebike INTEGER,
     mechanical INTEGER,
     duedate VARCHAR(255),
@@ -25,7 +25,9 @@ CREATE TABLE IF NOT EXISTS stations (
     capacity INTEGER,
     is_renting VARCHAR(255),
     is_installed VARCHAR(255),
-    is_returning VARCHAR(255)
+    is_returning VARCHAR(255),
+    PRIMARY KEY (record_timestamp, stationcode),
+    FOREIGN KEY (stationcode) REFERENCES locations(stationcode)
 );
 
 -- Create the velib_user and grant privileges
