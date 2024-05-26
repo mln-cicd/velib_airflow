@@ -24,6 +24,8 @@ x-airflow-common: &airflow-common
     AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
   volumes:
     - ./dags:/opt/airflow/dags
+#    - ./mount/logs:/opt/airflow/logs
+
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   depends_on:
     redis:

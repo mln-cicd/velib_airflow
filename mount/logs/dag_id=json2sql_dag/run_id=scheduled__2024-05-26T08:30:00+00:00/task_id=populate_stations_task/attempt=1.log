@@ -1,0 +1,93 @@
+[2024-05-26T08:32:58.363+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: json2sql_dag.populate_stations_task scheduled__2024-05-26T08:30:00+00:00 [queued]>
+[2024-05-26T08:32:58.366+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: json2sql_dag.populate_stations_task scheduled__2024-05-26T08:30:00+00:00 [queued]>
+[2024-05-26T08:32:58.366+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 1
+[2024-05-26T08:32:58.372+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): populate_stations_task> on 2024-05-26 08:30:00+00:00
+[2024-05-26T08:32:58.377+0000] {standard_task_runner.py:60} INFO - Started process 363 to run task
+[2024-05-26T08:32:58.379+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'json2sql_dag', 'populate_stations_task', 'scheduled__2024-05-26T08:30:00+00:00', '--job-id', '2296', '--raw', '--subdir', 'DAGS_FOLDER/json2sql_dag.py', '--cfg-path', '/tmp/tmpvqzstgad']
+[2024-05-26T08:32:58.381+0000] {standard_task_runner.py:88} INFO - Job 2296: Subtask populate_stations_task
+[2024-05-26T08:32:58.387+0000] {warnings.py:109} WARNING - /home/***/.local/lib/python3.8/site-packages/***/settings.py:194: DeprecationWarning: The sql_alchemy_conn option in [core] has been moved to the sql_alchemy_conn option in [database] - the old setting has been used, but please update your config.
+  SQL_ALCHEMY_CONN = conf.get("database", "SQL_ALCHEMY_CONN")
+
+[2024-05-26T08:32:58.403+0000] {task_command.py:423} INFO - Running <TaskInstance: json2sql_dag.populate_stations_task scheduled__2024-05-26T08:30:00+00:00 [running]> on host d904a9488f34
+[2024-05-26T08:32:58.436+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='json2sql_dag' AIRFLOW_CTX_TASK_ID='populate_stations_task' AIRFLOW_CTX_EXECUTION_DATE='2024-05-26T08:30:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2024-05-26T08:30:00+00:00'
+[2024-05-26T08:33:00.454+0000] {json2sql_dag.py:118} INFO - Populating stations...
+[2024-05-26T08:33:17.726+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1890, in _execute_context
+    self.dialect.do_executemany(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/dialects/postgresql/psycopg2.py", line 982, in do_executemany
+    context._psycopg2_fetched_rows = xtras.execute_values(
+  File "/home/airflow/.local/lib/python3.8/site-packages/psycopg2/extras.py", line 1299, in execute_values
+    cur.execute(b''.join(parts))
+psycopg2.errors.ForeignKeyViolation: insert or update on table "stations" violates foreign key constraint "stations_stationcode_fkey"
+DETAIL:  Key (stationcode)=() is not present in table "locations".
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 199, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 216, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/json2sql_dag.py", line 137, in populate_stations
+    session.commit()
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/orm/session.py", line 1454, in commit
+    self._transaction.commit(_to_root=self.future)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/orm/session.py", line 832, in commit
+    self._prepare_impl()
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/orm/session.py", line 811, in _prepare_impl
+    self.session.flush()
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/orm/session.py", line 3449, in flush
+    self._flush(objects)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/orm/session.py", line 3589, in _flush
+    transaction.rollback(_capture_exception=True)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/orm/session.py", line 3549, in _flush
+    flush_context.execute()
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/orm/unitofwork.py", line 456, in execute
+    rec.execute(self)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/orm/unitofwork.py", line 630, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/orm/persistence.py", line 245, in save_obj
+    _emit_insert_statements(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/orm/persistence.py", line 1097, in _emit_insert_statements
+    c = connection._execute_20(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1710, in _execute_20
+    return meth(self, args_10style, kwargs_10style, execution_options)
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 334, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1577, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1953, in _execute_context
+    self._handle_dbapi_exception(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2134, in _handle_dbapi_exception
+    util.raise_(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 211, in raise_
+    raise exception
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1890, in _execute_context
+    self.dialect.do_executemany(
+  File "/home/airflow/.local/lib/python3.8/site-packages/sqlalchemy/dialects/postgresql/psycopg2.py", line 982, in do_executemany
+    context._psycopg2_fetched_rows = xtras.execute_values(
+  File "/home/airflow/.local/lib/python3.8/site-packages/psycopg2/extras.py", line 1299, in execute_values
+    cur.execute(b''.join(parts))
+sqlalchemy.exc.IntegrityError: (psycopg2.errors.ForeignKeyViolation) insert or update on table "stations" violates foreign key constraint "stations_stationcode_fkey"
+DETAIL:  Key (stationcode)=() is not present in table "locations".
+
+[SQL: INSERT INTO stations (record_timestamp, stationcode, ebike, mechanical, duedate, numbikesavailable, numdocksavailable, capacity, is_renting, is_installed, is_returning) VALUES (%(record_timestamp)s, %(stationcode)s, %(ebike)s, %(mechanical)s, %(duedate)s, %(numbikesavailable)s, %(numdocksavailable)s, %(capacity)s, %(is_renting)s, %(is_installed)s, %(is_returning)s)]
+[parameters: ({'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '16107', 'ebike': 0, 'mechanical': 2, 'duedate': '2024-05-26T02:03:54+02:00', 'numbikesavailable': 2, 'numdocksavailable': 32, 'capacity': 35, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}, {'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '44015', 'ebike': 1, 'mechanical': 2, 'duedate': '2024-05-26T01:56:29+02:00', 'numbikesavailable': 3, 'numdocksavailable': 17, 'capacity': 20, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}, {'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '9020', 'ebike': 3, 'mechanical': 0, 'duedate': '2024-05-26T01:59:35+02:00', 'numbikesavailable': 3, 'numdocksavailable': 17, 'capacity': 21, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}, {'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '12109', 'ebike': 5, 'mechanical': 16, 'duedate': '2024-05-26T02:04:11+02:00', 'numbikesavailable': 21, 'numdocksavailable': 9, 'capacity': 30, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}, {'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '14111', 'ebike': 8, 'mechanical': 4, 'duedate': '2024-05-26T01:55:42+02:00', 'numbikesavailable': 12, 'numdocksavailable': 13, 'capacity': 25, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}, {'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '14014', 'ebike': 4, 'mechanical': 1, 'duedate': '2024-05-26T02:02:54+02:00', 'numbikesavailable': 5, 'numdocksavailable': 53, 'capacity': 60, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}, {'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '8026', 'ebike': 1, 'mechanical': 3, 'duedate': '2024-05-26T01:57:14+02:00', 'numbikesavailable': 4, 'numdocksavailable': 6, 'capacity': 12, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}, {'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '7002', 'ebike': 6, 'mechanical': 17, 'duedate': '2024-05-26T02:03:08+02:00', 'numbikesavailable': 23, 'numdocksavailable': 9, 'capacity': 35, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}  ... displaying 10 of 347904 total bound parameter sets ...  {'record_timestamp': '2024-05-26T10:25:00.366+02:00', 'stationcode': '21404', 'ebike': 0, 'mechanical': 0, 'duedate': '2024-03-08T10:28:13+01:00', 'numbikesavailable': 0, 'numdocksavailable': 0, 'capacity': 0, 'is_renting': 'NON', 'is_installed': 'NON', 'is_returning': 'NON'}, {'record_timestamp': '2024-05-26T10:25:00.366+02:00', 'stationcode': '8002', 'ebike': 9, 'mechanical': 28, 'duedate': '2024-05-26T10:00:39+02:00', 'numbikesavailable': 37, 'numdocksavailable': 8, 'capacity': 45, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'})]
+(Background on this error at: https://sqlalche.me/e/14/gkpj)
+[2024-05-26T08:33:17.733+0000] {taskinstance.py:1138} INFO - Marking task as FAILED. dag_id=json2sql_dag, task_id=populate_stations_task, execution_date=20240526T083000, start_date=20240526T083258, end_date=20240526T083317
+[2024-05-26T08:33:17.741+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 2296 for task populate_stations_task ((psycopg2.errors.ForeignKeyViolation) insert or update on table "stations" violates foreign key constraint "stations_stationcode_fkey"
+DETAIL:  Key (stationcode)=() is not present in table "locations".
+
+[SQL: INSERT INTO stations (record_timestamp, stationcode, ebike, mechanical, duedate, numbikesavailable, numdocksavailable, capacity, is_renting, is_installed, is_returning) VALUES (%(record_timestamp)s, %(stationcode)s, %(ebike)s, %(mechanical)s, %(duedate)s, %(numbikesavailable)s, %(numdocksavailable)s, %(capacity)s, %(is_renting)s, %(is_installed)s, %(is_returning)s)]
+[parameters: ({'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '16107', 'ebike': 0, 'mechanical': 2, 'duedate': '2024-05-26T02:03:54+02:00', 'numbikesavailable': 2, 'numdocksavailable': 32, 'capacity': 35, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}, {'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '44015', 'ebike': 1, 'mechanical': 2, 'duedate': '2024-05-26T01:56:29+02:00', 'numbikesavailable': 3, 'numdocksavailable': 17, 'capacity': 20, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}, {'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '9020', 'ebike': 3, 'mechanical': 0, 'duedate': '2024-05-26T01:59:35+02:00', 'numbikesavailable': 3, 'numdocksavailable': 17, 'capacity': 21, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}, {'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '12109', 'ebike': 5, 'mechanical': 16, 'duedate': '2024-05-26T02:04:11+02:00', 'numbikesavailable': 21, 'numdocksavailable': 9, 'capacity': 30, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}, {'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '14111', 'ebike': 8, 'mechanical': 4, 'duedate': '2024-05-26T01:55:42+02:00', 'numbikesavailable': 12, 'numdocksavailable': 13, 'capacity': 25, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}, {'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '14014', 'ebike': 4, 'mechanical': 1, 'duedate': '2024-05-26T02:02:54+02:00', 'numbikesavailable': 5, 'numdocksavailable': 53, 'capacity': 60, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}, {'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '8026', 'ebike': 1, 'mechanical': 3, 'duedate': '2024-05-26T01:57:14+02:00', 'numbikesavailable': 4, 'numdocksavailable': 6, 'capacity': 12, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}, {'record_timestamp': '2024-05-26T02:29:00.392+02:00', 'stationcode': '7002', 'ebike': 6, 'mechanical': 17, 'duedate': '2024-05-26T02:03:08+02:00', 'numbikesavailable': 23, 'numdocksavailable': 9, 'capacity': 35, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'}  ... displaying 10 of 347904 total bound parameter sets ...  {'record_timestamp': '2024-05-26T10:25:00.366+02:00', 'stationcode': '21404', 'ebike': 0, 'mechanical': 0, 'duedate': '2024-03-08T10:28:13+01:00', 'numbikesavailable': 0, 'numdocksavailable': 0, 'capacity': 0, 'is_renting': 'NON', 'is_installed': 'NON', 'is_returning': 'NON'}, {'record_timestamp': '2024-05-26T10:25:00.366+02:00', 'stationcode': '8002', 'ebike': 9, 'mechanical': 28, 'duedate': '2024-05-26T10:00:39+02:00', 'numbikesavailable': 37, 'numdocksavailable': 8, 'capacity': 45, 'is_renting': 'OUI', 'is_installed': 'OUI', 'is_returning': 'OUI'})]
+(Background on this error at: https://sqlalche.me/e/14/gkpj); 363)
+[2024-05-26T08:33:17.859+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2024-05-26T08:33:17.871+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

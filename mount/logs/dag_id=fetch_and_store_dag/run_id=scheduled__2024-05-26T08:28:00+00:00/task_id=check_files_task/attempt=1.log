@@ -1,0 +1,18 @@
+[2024-05-26T08:31:34.738+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: fetch_and_store_dag.check_files_task scheduled__2024-05-26T08:28:00+00:00 [queued]>
+[2024-05-26T08:31:34.742+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: fetch_and_store_dag.check_files_task scheduled__2024-05-26T08:28:00+00:00 [queued]>
+[2024-05-26T08:31:34.742+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 4
+[2024-05-26T08:31:34.747+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): check_files_task> on 2024-05-26 08:28:00+00:00
+[2024-05-26T08:31:34.752+0000] {standard_task_runner.py:60} INFO - Started process 246 to run task
+[2024-05-26T08:31:34.756+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'fetch_and_store_dag', 'check_files_task', 'scheduled__2024-05-26T08:28:00+00:00', '--job-id', '2277', '--raw', '--subdir', 'DAGS_FOLDER/fetch_and_store_dag.py', '--cfg-path', '/tmp/tmpt9wfkdmv']
+[2024-05-26T08:31:34.757+0000] {standard_task_runner.py:88} INFO - Job 2277: Subtask check_files_task
+[2024-05-26T08:31:34.767+0000] {warnings.py:109} WARNING - /home/***/.local/lib/python3.8/site-packages/***/settings.py:194: DeprecationWarning: The sql_alchemy_conn option in [core] has been moved to the sql_alchemy_conn option in [database] - the old setting has been used, but please update your config.
+  SQL_ALCHEMY_CONN = conf.get("database", "SQL_ALCHEMY_CONN")
+
+[2024-05-26T08:31:34.784+0000] {task_command.py:423} INFO - Running <TaskInstance: fetch_and_store_dag.check_files_task scheduled__2024-05-26T08:28:00+00:00 [running]> on host d904a9488f34
+[2024-05-26T08:31:34.817+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='fetch_and_store_dag' AIRFLOW_CTX_TASK_ID='check_files_task' AIRFLOW_CTX_EXECUTION_DATE='2024-05-26T08:28:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2024-05-26T08:28:00+00:00'
+[2024-05-26T08:31:34.817+0000] {fetch_and_store_dag.py:125} INFO - Checking file in MinIO...
+[2024-05-26T08:31:34.826+0000] {fetch_and_store_dag.py:132} INFO - File 'data_20240526_083132.json' exists in MinIO bucket.
+[2024-05-26T08:31:34.826+0000] {python.py:201} INFO - Done. Returned value was: None
+[2024-05-26T08:31:34.830+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=fetch_and_store_dag, task_id=check_files_task, execution_date=20240526T082800, start_date=20240526T083134, end_date=20240526T083134
+[2024-05-26T08:31:34.846+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2024-05-26T08:31:34.856+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 from sqlalchemy import create_engine, Column, String, Integer, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import logging
 import json
 import os
 from minio import Minio
@@ -46,6 +45,12 @@ class Station(Base):
     is_installed = Column(String)
     is_returning = Column(String)
 
+# Define the Location ORM model (assuming it exists)
+class Location(Base):
+    __tablename__ = 'locations'
+    stationcode = Column(String, primary_key=True)
+    # Add other columns as needed
+
 # Define the database models and functions directly in the DAG file
 def get_db_session():
     engine = create_engine(DATABASE_URI)
@@ -53,22 +58,16 @@ def get_db_session():
     Session = sessionmaker(bind=engine)
     return Session()
 
-logger = logging.getLogger(__name__)
-
 def sense_json_files():
-    logger.info("Checking for JSON files in MinIO bucket...")
     objects = list(minio_client.list_objects(MINIO_BUCKET, recursive=True))
     json_files = [obj.object_name for obj in objects if obj.object_name.endswith('.json')]
     
     if len(json_files) > 1:
-        logger.info("Found %d JSON files in the bucket.", len(json_files))
         return "fetch_json_files_task"
     else:
-        logger.info("No new JSON files found in the bucket.")
         return "no_change_dummy_task"
 
 def fetch_json_files():
-    logger.info("Fetching JSON files from MinIO bucket...")
     objects = list(minio_client.list_objects(MINIO_BUCKET, recursive=True))
     json_files = [obj.object_name for obj in objects if obj.object_name.endswith('.json')]
     json_files.sort()  # Sort the files to process them in order
@@ -76,83 +75,53 @@ def fetch_json_files():
     if len(json_files) > 1:
         json_files = json_files[:-1]  # Exclude the last file
     
-    logger.info("Fetched JSON files: %s", json_files)
     return json_files
 
-def process_data(**kwargs):
+def process_and_populate_data(**kwargs):
     ti = kwargs['ti']
     json_files = ti.xcom_pull(task_ids='fetch_json_files_task')
-    processed_data = []
+    session = get_db_session()
+    
     for json_file in json_files:
-        logger.info("Processing JSON file: %s", json_file)
         json_obj = minio_client.get_object(MINIO_BUCKET, json_file)
         try:
             data = json.load(json_obj)
-            logger.info("Processing data...")
             records = data.get("records", [])
             for record in records:
                 fields = record.get("fields", {})
-                processed_data.append({
-                    "record_timestamp": record.get("record_timestamp", ""),
-                    "stationcode": fields.get("stationcode", ""),
-                    "ebike": fields.get("ebike", 0),
-                    "mechanical": fields.get("mechanical", 0),
-                    "duedate": fields.get("duedate", ""),
-                    "numbikesavailable": fields.get("numbikesavailable", 0),
-                    "numdocksavailable": fields.get("numdocksavailable", 0),
-                    "capacity": fields.get("capacity", 0),
-                    "is_renting": fields.get("is_renting", ""),
-                    "is_installed": fields.get("is_installed", ""),
-                    "is_returning": fields.get("is_returning", "")
-                })
-        except json.decoder.JSONDecodeError as e:
-            logger.error("Error decoding JSON file %s: %s", json_file, str(e))
-            # Handle the error, e.g., skip the file or perform additional processing
-    logger.info("Data processing completed. Processed %d records.", len(processed_data))
-    ti.xcom_push(key='processed_data', value=processed_data)  # Push processed data to XCom
-
-
-def populate_stations(**kwargs):
-    ti = kwargs['ti']
-    processed_data = ti.xcom_pull(task_ids='process_data_task', key='processed_data')
-    logger.info("Populating stations...")
-    session = get_db_session()
-    for record in processed_data:
-        logger.debug("Processing record: %s", record)
-        station = Station(
-            record_timestamp=record['record_timestamp'],
-            stationcode=record['stationcode'],
-            ebike=record['ebike'],
-            mechanical=record['mechanical'],
-            duedate=record['duedate'],
-            numbikesavailable=record['numbikesavailable'],
-            numdocksavailable=record['numdocksavailable'],
-            capacity=record['capacity'],
-            is_renting=record['is_renting'],
-            is_installed=record['is_installed'],
-            is_returning=record['is_returning']
-        )
-        session.add(station)
-        logger.debug("Added station: %s", station)
+                stationcode = fields.get("stationcode", "")
+                if stationcode:  # Ensure stationcode is not empty
+                    # Check if stationcode exists in locations table
+                    location_exists = session.query(Location).filter_by(stationcode=stationcode).first()
+                    if location_exists:
+                        station = Station(
+                            record_timestamp=record.get("record_timestamp", ""),
+                            stationcode=stationcode,
+                            ebike=fields.get("ebike", 0),
+                            mechanical=fields.get("mechanical", 0),
+                            duedate=fields.get("duedate", ""),
+                            numbikesavailable=fields.get("numbikesavailable", 0),
+                            numdocksavailable=fields.get("numdocksavailable", 0),
+                            capacity=fields.get("capacity", 0),
+                            is_renting=fields.get("is_renting", ""),
+                            is_installed=fields.get("is_installed", ""),
+                            is_returning=fields.get("is_returning", "")
+                        )
+                        session.add(station)
+        except json.decoder.JSONDecodeError:
+            pass  # Handle the error, e.g., skip the file or perform additional processing
+    
     session.commit()
-    logger.info("Stations populated successfully.")
-
 
 def delete_processed_files(**kwargs):
     ti = kwargs['ti']
     json_files = ti.xcom_pull(task_ids='fetch_json_files_task')
     for json_file in json_files:
-        logger.info("Deleting processed JSON file: %s", json_file)
         minio_client.remove_object(MINIO_BUCKET, json_file)
 
 def check_new_rows():
-    logger.info("Checking for new rows in the database...")
     session = get_db_session()
     latest_record = session.query(Station).order_by(Station.record_timestamp.desc()).first()
-    if latest_record:
-        logger.info("Latest record timestamp: %s", latest_record.record_timestamp)
-    else:
-        logger.info("No records found in the database.")
     session.close()
 
 default_args = {
@@ -164,7 +133,7 @@ default_args = {
 }
 
 with DAG(
-    'json2sql_dag',
+    'json2sql_dag2',
     default_args=default_args,
     schedule_interval=timedelta(seconds=120),
     catchup=False
@@ -180,15 +149,9 @@ with DAG(
         python_callable=fetch_json_files
     )
 
-    process_data_task = PythonOperator(
-        task_id='process_data_task',
-        python_callable=process_data,
-        provide_context=True
-    )
-
-    populate_stations_task = PythonOperator(
-        task_id='populate_stations_task',
-        python_callable=populate_stations,
+    process_and_populate_data_task = PythonOperator(
+        task_id='process_and_populate_data_task',
+        python_callable=process_and_populate_data,
         provide_context=True
     )
 
@@ -205,5 +168,5 @@ with DAG(
 
     no_change_dummy_task = DummyOperator(task_id='no_change_dummy_task')
 
-sense_json_files_task >> [fetch_json_files_task, no_change_dummy_task]
-fetch_json_files_task >> process_data_task >> populate_stations_task >> check_new_rows_task >> delete_processed_files_task
+    sense_json_files_task >> [fetch_json_files_task, no_change_dummy_task]
+    fetch_json_files_task >> process_and_populate_data_task >> check_new_rows_task >> delete_processed_files_task

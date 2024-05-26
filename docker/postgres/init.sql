@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS locations (
 
 -- Create the stations table if it doesn't exist
 CREATE TABLE IF NOT EXISTS stations (
+    id SERIAL PRIMARY KEY,
     record_timestamp VARCHAR(255),
     stationcode VARCHAR(255),
     ebike INTEGER,
@@ -26,7 +27,6 @@ CREATE TABLE IF NOT EXISTS stations (
     is_renting VARCHAR(255),
     is_installed VARCHAR(255),
     is_returning VARCHAR(255),
-    PRIMARY KEY (record_timestamp, stationcode),
     FOREIGN KEY (stationcode) REFERENCES locations(stationcode)
 );
 

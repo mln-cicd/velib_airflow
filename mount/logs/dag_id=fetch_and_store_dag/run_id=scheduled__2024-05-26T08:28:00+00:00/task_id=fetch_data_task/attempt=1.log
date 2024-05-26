@@ -1,0 +1,36 @@
+[2024-05-26T08:30:02.448+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: fetch_and_store_dag.fetch_data_task scheduled__2024-05-26T08:28:00+00:00 [queued]>
+[2024-05-26T08:30:02.451+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: fetch_and_store_dag.fetch_data_task scheduled__2024-05-26T08:28:00+00:00 [queued]>
+[2024-05-26T08:30:02.451+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 4
+[2024-05-26T08:30:02.457+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): fetch_data_task> on 2024-05-26 08:28:00+00:00
+[2024-05-26T08:30:02.463+0000] {standard_task_runner.py:60} INFO - Started process 139 to run task
+[2024-05-26T08:30:02.464+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'fetch_and_store_dag', 'fetch_data_task', 'scheduled__2024-05-26T08:28:00+00:00', '--job-id', '2262', '--raw', '--subdir', 'DAGS_FOLDER/fetch_and_store_dag.py', '--cfg-path', '/tmp/tmpni69nehu']
+[2024-05-26T08:30:02.466+0000] {standard_task_runner.py:88} INFO - Job 2262: Subtask fetch_data_task
+[2024-05-26T08:30:02.473+0000] {warnings.py:109} WARNING - /home/***/.local/lib/python3.8/site-packages/***/settings.py:194: DeprecationWarning: The sql_alchemy_conn option in [core] has been moved to the sql_alchemy_conn option in [database] - the old setting has been used, but please update your config.
+  SQL_ALCHEMY_CONN = conf.get("database", "SQL_ALCHEMY_CONN")
+
+[2024-05-26T08:30:02.490+0000] {task_command.py:423} INFO - Running <TaskInstance: fetch_and_store_dag.fetch_data_task scheduled__2024-05-26T08:28:00+00:00 [running]> on host d904a9488f34
+[2024-05-26T08:30:02.526+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='fetch_and_store_dag' AIRFLOW_CTX_TASK_ID='fetch_data_task' AIRFLOW_CTX_EXECUTION_DATE='2024-05-26T08:28:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2024-05-26T08:28:00+00:00'
+[2024-05-26T08:30:02.527+0000] {fetch_and_store_dag.py:41} INFO - Fetching data from API...
+[2024-05-26T08:30:02.713+0000] {fetch_and_store_dag.py:47} INFO - Data fetched successfully.
+[2024-05-26T08:30:02.749+0000] {python.py:201} INFO - Done. Returned value was: None
+[2024-05-26T08:30:02.755+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=fetch_and_store_dag, task_id=fetch_data_task, execution_date=20240526T082800, start_date=20240526T083002, end_date=20240526T083002
+[2024-05-26T08:30:02.796+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2024-05-26T08:30:02.810+0000] {taskinstance.py:3280} INFO - 2 downstream tasks scheduled from follow-on schedule check
+[2024-05-26T08:31:30.908+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: fetch_and_store_dag.fetch_data_task scheduled__2024-05-26T08:28:00+00:00 [queued]>
+[2024-05-26T08:31:30.911+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: fetch_and_store_dag.fetch_data_task scheduled__2024-05-26T08:28:00+00:00 [queued]>
+[2024-05-26T08:31:30.911+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 4
+[2024-05-26T08:31:30.917+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): fetch_data_task> on 2024-05-26 08:28:00+00:00
+[2024-05-26T08:31:30.922+0000] {standard_task_runner.py:60} INFO - Started process 222 to run task
+[2024-05-26T08:31:30.924+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'fetch_and_store_dag', 'fetch_data_task', 'scheduled__2024-05-26T08:28:00+00:00', '--job-id', '2268', '--raw', '--subdir', 'DAGS_FOLDER/fetch_and_store_dag.py', '--cfg-path', '/tmp/tmph3vfszmr']
+[2024-05-26T08:31:30.925+0000] {standard_task_runner.py:88} INFO - Job 2268: Subtask fetch_data_task
+[2024-05-26T08:31:30.933+0000] {warnings.py:109} WARNING - /home/***/.local/lib/python3.8/site-packages/***/settings.py:194: DeprecationWarning: The sql_alchemy_conn option in [core] has been moved to the sql_alchemy_conn option in [database] - the old setting has been used, but please update your config.
+  SQL_ALCHEMY_CONN = conf.get("database", "SQL_ALCHEMY_CONN")
+
+[2024-05-26T08:31:30.950+0000] {task_command.py:423} INFO - Running <TaskInstance: fetch_and_store_dag.fetch_data_task scheduled__2024-05-26T08:28:00+00:00 [running]> on host d904a9488f34
+[2024-05-26T08:31:30.981+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='fetch_and_store_dag' AIRFLOW_CTX_TASK_ID='fetch_data_task' AIRFLOW_CTX_EXECUTION_DATE='2024-05-26T08:28:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2024-05-26T08:28:00+00:00'
+[2024-05-26T08:31:30.982+0000] {fetch_and_store_dag.py:41} INFO - Fetching data from API...
+[2024-05-26T08:31:31.153+0000] {fetch_and_store_dag.py:47} INFO - Data fetched successfully.
+[2024-05-26T08:31:31.196+0000] {python.py:201} INFO - Done. Returned value was: None
+[2024-05-26T08:31:31.201+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=fetch_and_store_dag, task_id=fetch_data_task, execution_date=20240526T082800, start_date=20240526T083130, end_date=20240526T083131
+[2024-05-26T08:31:31.216+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2024-05-26T08:31:31.229+0000] {taskinstance.py:3280} INFO - 2 downstream tasks scheduled from follow-on schedule check

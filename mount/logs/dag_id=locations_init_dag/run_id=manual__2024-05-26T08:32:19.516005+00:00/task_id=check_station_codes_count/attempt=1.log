@@ -1,0 +1,17 @@
+[2024-05-26T08:32:27.139+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: locations_init_dag.check_station_codes_count manual__2024-05-26T08:32:19.516005+00:00 [queued]>
+[2024-05-26T08:32:27.142+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: locations_init_dag.check_station_codes_count manual__2024-05-26T08:32:19.516005+00:00 [queued]>
+[2024-05-26T08:32:27.142+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2024-05-26T08:32:27.147+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): check_station_codes_count> on 2024-05-26 08:32:19.516005+00:00
+[2024-05-26T08:32:27.152+0000] {standard_task_runner.py:60} INFO - Started process 323 to run task
+[2024-05-26T08:32:27.154+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'locations_init_dag', 'check_station_codes_count', 'manual__2024-05-26T08:32:19.516005+00:00', '--job-id', '2289', '--raw', '--subdir', 'DAGS_FOLDER/locations_init_dag.py', '--cfg-path', '/tmp/tmp3fhk831y']
+[2024-05-26T08:32:27.156+0000] {standard_task_runner.py:88} INFO - Job 2289: Subtask check_station_codes_count
+[2024-05-26T08:32:27.163+0000] {warnings.py:109} WARNING - /home/***/.local/lib/python3.8/site-packages/***/settings.py:194: DeprecationWarning: The sql_alchemy_conn option in [core] has been moved to the sql_alchemy_conn option in [database] - the old setting has been used, but please update your config.
+  SQL_ALCHEMY_CONN = conf.get("database", "SQL_ALCHEMY_CONN")
+
+[2024-05-26T08:32:27.180+0000] {task_command.py:423} INFO - Running <TaskInstance: locations_init_dag.check_station_codes_count manual__2024-05-26T08:32:19.516005+00:00 [running]> on host d904a9488f34
+[2024-05-26T08:32:27.213+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='locations_init_dag' AIRFLOW_CTX_TASK_ID='check_station_codes_count' AIRFLOW_CTX_EXECUTION_DATE='2024-05-26T08:32:19.516005+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-05-26T08:32:19.516005+00:00'
+[2024-05-26T08:32:27.221+0000] {locations_init_dag.py:117} INFO - There are more than 1400 station codes in the locations table.
+[2024-05-26T08:32:27.221+0000] {python.py:201} INFO - Done. Returned value was: True
+[2024-05-26T08:32:27.232+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=locations_init_dag, task_id=check_station_codes_count, execution_date=20240526T083219, start_date=20240526T083227, end_date=20240526T083227
+[2024-05-26T08:32:27.246+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2024-05-26T08:32:27.255+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
